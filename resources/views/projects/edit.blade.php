@@ -5,7 +5,7 @@
 
 <form action="{{ route('projects.update', $project) }}" method="POST">
     @csrf
-    @method('PUT') {{-- Ini wajib untuk method PUT --}}
+    @method('PUT')
     
     <div class="mb-3">
         <label for="name" class="form-label">Project Name</label>

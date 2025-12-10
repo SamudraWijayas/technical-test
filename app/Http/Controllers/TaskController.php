@@ -62,7 +62,6 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task deleted!');
     }
 
-    // Statistik task Done per bulan
     public function statsDonePerMonth()
     {
         $stats = Task::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as total')

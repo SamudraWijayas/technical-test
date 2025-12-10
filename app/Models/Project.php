@@ -26,13 +26,11 @@ class Project extends Model
         return $this->hasMany(Task::class);
     }
 
-    // Total task
     public function taskCount(): int
     {
         return $this->tasks()->count();
     }
 
-    // Summary task by status
     public function taskSummaryByStatus(): array
     {
         return $this->tasks()
@@ -42,29 +40,26 @@ class Project extends Model
             ->toArray();
     }
 
-    // Progress project with weighted statuses
-public function progress(): float
-{
-    $total = $this->tasks()->count();
-    if ($total === 0) return 0;
+    public function progress(): float
+    {
+        $total = $this->tasks()->count();
+        if ($total === 0) return 0;
 
-    $counts = $this->tasks()
-        ->selectRaw('status, COUNT(*) as count')
-        ->groupBy('status')
-        ->pluck('count', 'status');
+        $counts = $this->tasks()
+            ->selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
 
-    $done = $counts[4] ?? 0;
-    $review = $counts[3] ?? 0;
-    $doing = $counts[2] ?? 0;
+        $done = $counts[4] ?? 0;
+        $review = $counts[3] ?? 0;
+        $doing = $counts[2] ?? 0;
 
-    // Bobot: Done=1, Review=0.75, Doing=0.5
-    $progress = (($done * 1 + $review * 0.5 + $doing * 0.35) / $total) * 100;
+        $progress = (($done * 1 + $review * 0.5 + $doing * 0.35) / $total) * 100;
 
-    return round($progress, 2);
-}
+        return round($progress, 2);
+    }
 
 
-    // Check if project is problematic
     public function isProblematic(): bool
     {
         $overdue = $this->tasks()
@@ -75,7 +70,6 @@ public function progress(): float
         return $overdue && $this->progress() < 50;
     }
 
-    // Status label
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
